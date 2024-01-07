@@ -1,0 +1,54 @@
+Code :
+#include <Servo.h>
+int servopin=2;
+int servopos;
+int photoresistorpin1=A1;
+int photoresistorpin2=A2;
+int photoresistorpin;
+int voltageread1;
+int voltageread2;
+int voltageread;
+int dt=250;
+int buzzerpin=4;
+int alert=7;
+int ledpin=8;
+int dt2=1000;
+Servo myservo;
+void setup() {
+  // put your setup code here, to run once:
+Serial.begin(9600);
+myservo.attach(servopin);
+pinMode(photoresistorpin1, INPUT);
+pinMode(photoresistorpin2, INPUT);
+pinMode(alert, OUTPUT);
+pinMode(buzzerpin, OUTPUT);
+pinMode(ledpin, OUTPUT);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+voltageread1 = analogRead(photoresistorpin1);
+voltageread2 = analogRead(photoresistorpin2);
+voltageread = (voltageread1 + voltageread2)/2;
+Serial.println(voltageread);
+delay(dt);
+
+  servopos = (-0.18*voltageread) + 184.14;
+  myservo.write(servopos);
+
+ if(voltageread < 15){
+  digitalWrite(buzzerpin, HIGH);
+  delay(dt2);
+  digitalWrite(buzzerpin, LOW);
+  delay(dt2);
+ } 
+
+ if(voltageread < 15){
+  digitalWrite(alert, HIGH);
+  delay(dt2);
+  digitalWrite(alert, LOW);
+  delay(dt2);
+ } 
+
+analogWrite(ledpin, voltageread); 
+}
